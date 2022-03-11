@@ -18,4 +18,18 @@ router.get("/", (req, res) => {
     });
 });
 
+router.get("/:id", (req, res) => {
+  Actions.get(req.params.id)
+    .then((actions) => {
+      if (actions) {
+        res.status(200).json(actions);
+      } else {
+        res.status(404).json([]);
+      }
+    })
+    .catch((error) => {
+      res.status(500).json({ message: error.message });
+    });
+});
+
 module.exports = router;

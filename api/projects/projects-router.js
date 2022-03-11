@@ -28,4 +28,24 @@ router.get("/:id", (req, res) => {
     });
 });
 
+router.post("/", (req, res) => {
+  const { name, description } = req.body;
+  if (!name || !description) {
+    res.status(400).json({ message: "please provide name and description" });
+  } else {
+    Projects.insert(project)
+      //   .then(([id]) => {
+      //     return Projects.get(id);
+      //   })
+      .then((id) => {
+        res.status(201).json(id);
+      })
+      .catch((error) => {
+        res.status(500).json({
+          message: error.message,
+        });
+      });
+  }
+});
+
 module.exports = router;
