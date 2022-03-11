@@ -16,4 +16,10 @@ server.use("/api/actions", actionsRouter);
 const projectsRouter = require("./projects/projects-router");
 server.use("/api/projects", projectsRouter);
 
+server.use("*", (req, res) => {
+  res.status(404).json({
+    message: "not found",
+  });
+});
+
 module.exports = server;

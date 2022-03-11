@@ -14,4 +14,18 @@ router.get("/", (req, res) => {
     });
 });
 
+router.get("/:id", (req, res) => {
+  Projects.get(req.params.id)
+    .then((projects) => {
+      if (projects) {
+        res.status(200).json(projects);
+      } else {
+        res.status(404).json({});
+      }
+    })
+    .catch((error) => {
+      res.status(500).json({ message: error.message });
+    });
+});
+
 module.exports = router;
