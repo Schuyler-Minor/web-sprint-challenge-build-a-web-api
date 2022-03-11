@@ -33,17 +33,46 @@ router.post("/", (req, res) => {
   if (!name || !description) {
     res.status(400).json({ message: "please provide name and description" });
   } else {
-    Projects.insert(project)
-      //   .then(([id]) => {
-      //     return Projects.get(id);
-      //   })
-      .then((id) => {
-        res.status(201).json(id);
+    Projects.insert({ name, description })
+      .then(({ id }) => {
+        return Projects.get(id);
+      })
+      .then((project) => {
+        res.status(201).json(project);
       })
       .catch((error) => {
         res.status(500).json({
           message: error.message,
         });
+      });
+  }
+});
+
+router.put("/:id", (req, res) => {
+  const { name, description } = req.body;
+  if (!name || !description) {
+    res.status(400).json({ message: "please provide name and description" });
+  } else {
+    Projects.get(req.params.id)
+      .then((project) => {
+        if (!project) {
+          res.status(404).json({ message: err.message });
+        } else {
+          return Projects.update(req.params.id, req.body);
+        }
+      })
+      .then((action) => {
+        if (action) {
+          return Projects.get(req.params.id);
+        }
+      })
+      .then((project) => {
+        if (project) {
+          res.json(project);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }
 });
