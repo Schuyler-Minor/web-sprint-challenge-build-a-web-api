@@ -48,4 +48,20 @@ router.post("/", (req, res) => {
   }
 });
 
+router.delete("/:id", async (req, res) => {
+  try {
+    const project = await Projects.get(req.params.id);
+    if (!project) {
+      res
+        .status(404)
+        .json({ message: "The post with the specified ID does not exist" });
+    } else {
+      await Projects.remove(req.params.id);
+      res.json(project);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 module.exports = router;
