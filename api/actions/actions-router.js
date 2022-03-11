@@ -32,4 +32,20 @@ router.get("/:id", (req, res) => {
     });
 });
 
+router.delete("/:id", async (req, res) => {
+  try {
+    const action = await Actions.get(req.params.id);
+    if (!action) {
+      res
+        .status(404)
+        .json({ message: "The post with the specified ID does not exist" });
+    } else {
+      await Actions.remove(req.params.id);
+      res.json(action);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 module.exports = router;
