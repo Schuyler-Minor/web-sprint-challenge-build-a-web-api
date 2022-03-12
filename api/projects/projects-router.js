@@ -28,6 +28,24 @@ router.get("/:id", (req, res) => {
     });
 });
 
+router.get("/:id/actions", async (req, res) => {
+  try {
+    const project = await Projects.get(req.params.id);
+    if (!project) {
+      res
+        .status(404)
+        .json({ message: "The post with the specified ID does not exist" });
+    } else {
+      const actions = await Projects.getProjectActions(req.params.id);
+      res.json(actions);
+    }
+  } catch (error) {
+    res.status(500).json({
+      error: "The post information could not be retrieved.",
+    });
+  }
+});
+
 router.post("/", (req, res) => {
   const { name, description } = req.body;
   if (!name || !description) {
