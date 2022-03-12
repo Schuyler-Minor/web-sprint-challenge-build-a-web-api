@@ -32,6 +32,55 @@ router.get("/:id", (req, res) => {
     });
 });
 
+router.post("/", (req, res) => {
+  const { name, description } = req.body;
+  if (!name || !description) {
+    res.status(400).json({ message: "please provide name and description" });
+  } else {
+    Actions.insert({ name, description })
+      .then(({ id }) => {
+        return Actions.get(id);
+      })
+      .then((action) => {
+        res.status(201).json(action);
+      })
+      .catch((error) => {
+        res.status(500).json({
+          message: error.message,
+        });
+      });
+  }
+});
+
+router.put("/:id", (req, res) => {
+  const { name, description } = req.body;
+  if (!name || !description) {
+    res.status(400).json({ message: "please provide name and description" });
+  } else {
+    Actions.get(req.params.id)
+      .then((action) => {
+        if (!action) {
+          res.status(404).json({ message: "nope" });
+        } else {
+          return Actions.update(req.params.id, req.body);
+        }
+      })
+      .then((action) => {
+        if (action) {
+          return Actions.get(req.params.id);
+        }
+      })
+      .then((action) => {
+        if (action) {
+          res.json(action);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+});
+
 router.delete("/:id", async (req, res) => {
   try {
     const action = await Actions.get(req.params.id);

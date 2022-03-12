@@ -20,7 +20,7 @@ router.get("/:id", (req, res) => {
       if (projects) {
         res.status(200).json(projects);
       } else {
-        res.status(404).json({});
+        res.status(404).json([]);
       }
     })
     .catch((error) => {
@@ -56,7 +56,7 @@ router.put("/:id", (req, res) => {
     Projects.get(req.params.id)
       .then((project) => {
         if (!project) {
-          res.status(404).json({ message: err.message });
+          res.status(404).json({ message: "nope" });
         } else {
           return Projects.update(req.params.id, req.body);
         }
