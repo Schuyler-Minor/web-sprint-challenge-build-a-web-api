@@ -1,5 +1,7 @@
 // Write your "actions" router here!
 const express = require("express");
+
+const { validateUser, requiredBody } = require("./actions-middlware");
 const router = express.Router();
 
 const Actions = require("./actions-model");
@@ -32,24 +34,12 @@ router.get("/:id", (req, res) => {
     });
 });
 
-router.post("/", (req, res) => {
-  const { name, description } = req.body;
-  if (!name || !description) {
-    res.status(400).json({ message: "please provide name and description" });
-  } else {
-    Actions.insert({ name, description })
-      .then(({ id }) => {
-        return Actions.get(id);
-      })
-      .then((action) => {
-        res.status(201).json(action);
-      })
-      .catch((error) => {
-        res.status(500).json({
-          message: error.message,
-        });
-      });
-  }
+router.post("/", requiredBody, (req, res, next) => {
+  Actions.insert(req.body)
+    .then((newAction) => {
+      res.status(201).json(newAction);
+    })
+    .catch(next);
 });
 
 router.put("/:id", (req, res) => {
